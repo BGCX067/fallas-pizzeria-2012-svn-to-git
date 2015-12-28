@@ -1,0 +1,66 @@
+//created on: Jun 30, 2012
+package pizzeria
+
+//list any import classes here.
+import pizzeria.empanadas.*;
+import pizzeria.enums.*;
+import pizzeria.ingredientes.*;
+import pizzeria.pizzas.*;
+
+//declare any global variables here
+
+
+rule "Incremento de levadura con el frio"
+    when
+        Contexto( estacion == Estacion.INVIERNO ) or Contexto( estacion == Estacion.OTONIO )
+        a : Pizza(  )
+    then
+        a.setCantidadDeLevadura(a.getCantidadDeLevadura() + 50.0d);
+        update(a);
+end
+
+rule "Incremento de la venta de pizzas con el feriado"
+	when
+		Contexto( avecinaFeriado == true )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( 10 );
+		update(a);
+end
+
+rule "Decremento de las ventas en verano"
+	when
+		Contexto( estacion == Estacion.VERANO )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( -10 );
+		update(a);
+end
+
+rule "Cambio las cantidades en empanada de carne en pascuas"
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaCarne( )  
+	then
+		c.incrementarVentas( -50 );
+		update(c);
+end
+
+rule "Cambio las cantidades en humita de carne en pascuas"
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaHumita( )  
+	then
+		c.incrementarVentas( 25 );
+		update(c);
+end
+ 
+rule "Cambio las cantidades en queso y cebolla de carne en pascuas"
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaQuesoYCebolla( )  
+	then
+		c.incrementarVentas( 25 );
+		update(c);
+end
+

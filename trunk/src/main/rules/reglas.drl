@@ -1,0 +1,122 @@
+//created on: Jun 30, 2012
+package pizzeria
+
+//list any import classes here.
+import pizzeria.empanadas.*;
+import pizzeria.enums.*;
+import pizzeria.ingredientes.*;
+import pizzeria.pizzas.*;
+
+//declare any global variables here
+
+
+rule "Incremento de levadura con el frio"
+	no-loop true
+	lock-on-active
+    when
+        Contexto( estacion == Estacion.INVIERNO ) or Contexto( estacion == Estacion.OTONIO )
+        a : Pizza(  )
+    then
+        a.setCantidadDeLevadura(a.getCantidadDeLevadura() + 50.0d);
+        update(a);
+end
+
+rule "Incremento de la venta con el feriado"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( avecinaFeriado == true )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( 10 );
+		update(a);
+end
+
+rule "Decremento de las ventas en verano"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( estacion == Estacion.VERANO )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( -10 );
+		update(a);
+end
+
+rule "Cambio las cantidades en empanada de carne en pascuas"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaCarne( )  
+	then
+		c.incrementarVentas( -50 );
+		update(c);
+end
+
+rule "Cambio las cantidades en humita de carne en pascuas"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaHumita( )  
+	then
+		c.incrementarVentas( 25 );
+		update(c);
+end
+ 
+rule "Cambio las cantidades en queso y cebolla de carne en pascuas"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( pascuas == true )
+		c : EmpanadaQuesoYCebolla( )  
+	then
+		c.incrementarVentas( 25 );
+		update(c);
+end
+
+rule "Decremento de las ventas compentencia con promocion"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( competencia == Competencia.EN_PROMOCION )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( -15 );
+		update(a);
+end
+
+rule "Incremento de las ventas compentencia con precios mas caros"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( competencia == Competencia.MAS_CARO )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( 15 );
+		update(a);
+end
+
+rule "Decremento de la produccion -horno con capacidad media-"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( capacidadHorno == CapacidadHorno.MEDIA )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( -5 );
+		update(a);
+end
+
+rule "Decremento de la produccion -horno con capacidad baja-"
+	no-loop true
+	lock-on-active
+	when
+		Contexto( capacidadHorno == CapacidadHorno.BAJA )
+		a : ElementoVendible( )
+	then
+		a.incrementarVentas( -10 );
+		update(a);
+end
+
